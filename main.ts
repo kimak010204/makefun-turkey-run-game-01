@@ -6,7 +6,7 @@
 // the same repository always writes the same bytes.
 
 import { buildDossier } from './vendor/makefun-game.ts';
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -27,8 +27,8 @@ function main(): void {
   const root = entryRoot();
   const out = resolve(OUTPUT_DIR);
 
-  // Start from a clean output directory so stale files can never leak in.
-  if (existsSync(out)) rmSync(out, { recursive: true, force: true });
+  // The output directory is a fresh mount in the grader; never remove it,
+  // only ensure it exists (rmSync on a mount point throws EBUSY).
   mkdirSync(out, { recursive: true });
 
   // Copy the playable game and the screenshots beside the dossier.
